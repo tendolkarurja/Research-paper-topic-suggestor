@@ -4,19 +4,20 @@
 <img src="data:image/png;base64,{{ wordcloud }}" />
 <h2>Choose among the following topics: </h2>
 <form action = "/recommended" method = "POST">
+    {% csrf_token %}
     <label>
-        <input type = 'radio' name = 'AI'>AI
+        <input type = 'radio' name = 'ch' value = "AI" required>AI
     </label><br>
     <label>
-        <input type = 'radio' name = 'ML'>ML
+        <input type = 'radio' name = 'ch' value = "ML" required>ML
     </label><br>
     <label>
-        <input type = 'radio' name = 'Quantum Computing'>Quantum Computing
+        <input type = 'radio' name = 'ch' value = "Quantum Computing" required>Quantum Computing
     </label><br>
     <label>
-        <input type = 'radio' name = 'NLP'>NLP
+        <input type = 'radio' name = 'ch' value = "NLP" required>NLP
     </label><br>
-    <button type = "submit">Submit</button>
+    <button type = "submit">Suggest Papers</button>
 </form>
 
 
