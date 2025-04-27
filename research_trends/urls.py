@@ -16,12 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from core.views import register
-from dashboard.views import trending_topics
+from core.views import *
+from dashboard.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', register, name='register'),
-    path('dashboard/', trending_topics, name='trending_topics'),
-    # Add more as you build
+    path('dashboard/', trending_topics, name='dashboard'),
+    path('', home, name='home'),
 ]
