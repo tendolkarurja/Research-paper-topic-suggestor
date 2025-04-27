@@ -18,10 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from core.views import *
 from dashboard.views import *
+from recommender.views import *
+import core, recommender
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', register, name='register'),
+    path('login/', core.views.log_in, name = 'login'),
     path('dashboard/', trending_topics, name='dashboard'),
     path('', home, name='home'),
+    path('recommended', recommender.views.show_recommendations, name = 'suggested')
 ]

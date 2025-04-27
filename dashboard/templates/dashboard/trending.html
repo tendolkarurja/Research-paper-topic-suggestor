@@ -2,4 +2,22 @@
 {% block content %}
 <h2>Trending Topics</h2>
 <img src="data:image/png;base64,{{ wordcloud }}" />
+<h2>Choose among the following topics: </h2>
+<form action = "/recommended" method = "POST">
+    <label>
+        <input type = 'radio' name = 'AI'>AI
+    </label><br>
+    <label>
+        <input type = 'radio' name = 'ML'>ML
+    </label><br>
+    <label>
+        <input type = 'radio' name = 'Quantum Computing'>Quantum Computing
+    </label><br>
+    <label>
+        <input type = 'radio' name = 'NLP'>NLP
+    </label><br>
+    <button type = "submit">Submit</button>
+</form>
+
+
 {% endblock %}
