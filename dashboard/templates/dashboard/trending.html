@@ -1,24 +1,151 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Trending Topics</h2>
-<img src="data:image/png;base64,{{ wordcloud }}" />
-<h2>Choose among the following topics: </h2>
-<form action = "/recommended" method = "POST">
-    {% csrf_token %}
-    <label>
-        <input type = 'radio' name = 'ch' value = "AI" required>AI
-    </label><br>
-    <label>
-        <input type = 'radio' name = 'ch' value = "ML" required>ML
-    </label><br>
-    <label>
-        <input type = 'radio' name = 'ch' value = "Quantum Computing" required>Quantum Computing
-    </label><br>
-    <label>
-        <input type = 'radio' name = 'ch' value = "NLP" required>NLP
-    </label><br>
-    <button type = "submit">Suggest Papers</button>
-</form>
+<head>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f8fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
+        .main-heading {
+            font-size: 32px;
+            color: #4b7bec;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .sub-heading {
+            font-size: 20px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Wordcloud Image Styling */
+        .wordcloud {
+            max-width: 90%;
+            height: auto;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form Styling */
+        .topics-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .radio-group {
+            font-size: 18px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .submit-btn {
+            background-color: #4b7bec;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 250px;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #2d6ad6;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            background-color: #1a4f99;
+            transform: translateY(0);
+        }
+
+        .radio-group label:hover {
+            color: #3498db;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .submit-btn {
+                width: 100%;
+                font-size: 16px;
+            }
+
+            .main-heading {
+                font-size: 28px;
+            }
+
+            .sub-heading {
+                font-size: 18px;
+            }
+
+            .radio-group {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<div class="container">
+    <h2 class="main-heading">Trending Topics</h2>
+    <img class="wordcloud" src="data:image/png;base64,{{ wordcloud }}" alt="Trending Word Cloud">
+    
+    <h2 class="sub-heading">Choose among the following topics:</h2>
+    <form action="/recommended" method="POST" class="topics-form">
+        {% csrf_token %}
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="ch" value="AI" required> AI
+            </label>
+        </div>
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="ch" value="ML" required> ML
+            </label>
+        </div>
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="ch" value="Quantum Computing" required> Quantum Computing
+            </label>
+        </div>
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="ch" value="NLP" required> NLP
+            </label>
+        </div>
+        <button type="submit" class="submit-btn">Suggest Papers</button>
+    </form>
+</div>
 {% endblock %}

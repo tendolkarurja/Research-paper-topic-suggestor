@@ -1,7 +1,4 @@
 from django.shortcuts import render
-
-# Create your views here.
-
 from django.http import JsonResponse
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
@@ -21,21 +18,33 @@ bert_tokenizer = BertTokenizer.from_pretrained('allenai/scibert_scivocab_uncased
 bert_model = BertModel.from_pretrained('allenai/scibert_scivocab_uncased')
 
 def lda_topic_modeling(papers):
+    """
+    Perform LDA topic modeling on the provided list of papers.
+    Each paper should be a string.
+    """
     vectorizer = TfidfVectorizer(stop_words='english')
     X = vectorizer.fit_transform(papers)
     lda = LatentDirichletAllocation(n_components=3, random_state=42)
     lda.fit(X)
     topics = []
     for topic in lda.components_:
-        topics.append([vectorizer.get_feature_names_out()[i] for i in topic.argsort()[-5:]])
+        topics.append([vectorizer.get_feature_names_out()[i] for i in topic.argsort()[-5:]])  # Get top 5 terms
     return topics
 
 def bertopic_modeling(papers):
+    """
+    Perform BERTopic modeling on the provided list of papers.
+    Each paper should be a string.
+    """
     topic_model = BERTopic()
     topics, _ = topic_model.fit_transform(papers)
-    return topic_model.get_topic_info().to_dict()
+    topic_info = topic_model.get_topic_info()
+    return topic_info.to_dict(orient='records')  # Return topic info as a list of dictionaries
 
 def recommend_topics(query, papers):
+    """
+    Recommend the most similar paper to the query using cosine similarity.
+    """
     query_embedding = sentence_model.encode([query])
     paper_embeddings = sentence_model.encode(papers)
     similarities = cosine_similarity(query_embedding, paper_embeddings)
@@ -43,6 +52,9 @@ def recommend_topics(query, papers):
     return papers[most_similar_index]
 
 def scibert_similarity_search(texts, query):
+    """
+    Use SciBERT model to find the most similar paper to the query based on cosine similarity.
+    """
     inputs = bert_tokenizer(texts, return_tensors="pt", padding=True, truncation=True)
     query_input = bert_tokenizer(query, return_tensors="pt")
     with torch.no_grad():
@@ -52,29 +64,38 @@ def scibert_similarity_search(texts, query):
     most_similar_index = similarity.argmax()
     return texts[most_similar_index]
 
-from django.shortcuts import render
-from .preprocessing import get_arxiv_papers, parse_arxiv_response
-
-# your existing model loading and functions remain here...
-
 def fetch_topics(request):
+    """
+    Fetch topics based on a query and return a response with topic information.
+    """
     query = request.GET.get('query', 'Machine Learning')
     response_text = get_arxiv_papers(query)
     if not response_text:
         return JsonResponse({'error': 'Failed to fetch papers from arXiv'})
 
     papers = parse_arxiv_response(response_text)
+    if not papers:
+        return JsonResponse({'error': 'Failed to parse papers from arXiv response'})
+
+    # LDA Topic Modeling
     lda_topics = lda_topic_modeling(papers)
-    bertopic_info_df = bertopic_modeling(papers)
-    bertopic_topics = bertopic_info_df.to_dict(orient='records')
+
+    # BERTopic Modeling
+    bertopic_info = bertopic_modeling(papers)
+    
+    # Recommend based on cosine similarity
     recommended_topic = recommend_topics(query, papers)
+    
+    # SciBERT similarity search
     scibert_recommendation = scibert_similarity_search(papers, query)
 
+    # Return results to the frontend (render a template)
     context = {
         'query': query,
         'lda_topics': lda_topics,
-        'bertopic_topics': bertopic_topics,
+        'bertopic_topics': bertopic_info,
         'recommended_topic': recommended_topic,
         'scibert_recommendation': scibert_recommendation
     }
+    
     return render(request, 'papers/topics.html', context)

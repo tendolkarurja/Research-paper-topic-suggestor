@@ -1,11 +1,60 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 80px auto;
+        padding: 30px;
+        background-color: #f7f9fc;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<h2>Login</h2>
-<form method = "POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-</form>
+    .login-container h2 {
+        margin-bottom: 25px;
+        font-size: 2rem;
+        color: #222;
+    }
+
+    .login-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .login-container input[type="text"],
+    .login-container input[type="password"] {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+
+    .login-container button {
+        background-color: #0077cc;
+        color: #fff;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .login-container button:hover {
+        background-color: #005fa3;
+    }
+</style>
+
+<div class="login-container">
+    <h2>Login</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+</div>
 {% endblock content %}

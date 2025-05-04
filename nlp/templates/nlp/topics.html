@@ -1,20 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ML Topic Modeling Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h2 { color: #333; }
-        ul { margin-bottom: 20px; }
-        .section { margin-bottom: 30px; }
-        .highlight { font-weight: bold; color: #008000; }
+        :root {
+            --primary-color: #0d6efd;
+            --accent-color: #28a745;
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            padding: 40px;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #222;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 30px;
+            margin-bottom: 35px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.07);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th, table td {
+            border: 1px solid var(--border-color);
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 1.05rem;
+        }
+
+        table th {
+            background-color: #f0f2f5;
+            font-weight: 700;
+            color: #444;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        table tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .highlight {
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.75em;
+            background-color: var(--primary-color);
+            color: #fff;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-left: 8px;
+        }
+
+        .query-text {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
     </style>
 </head>
 <body>
-    <h1>ML Topic Modeling Results for "{{ query }}"</h1>
+
+    <h1>📊 ML Topic Modeling Results for <span class="query-text">"{{ query }}"</span></h1>
 
     <div class="section">
-        <h2>LDA Topics</h2>
+        <h2>LDA Topics <span class="badge">LDA</span></h2>
         {% for topic in lda_topics %}
             <ul>
                 {% for word in topic %}
@@ -25,8 +125,8 @@
     </div>
 
     <div class="section">
-        <h2>BERTopic Topics</h2>
-        <table border="1" cellpadding="8">
+        <h2>BERTopic Topics <span class="badge">BERTopic</span></h2>
+        <table>
             <tr>
                 <th>Topic</th>
                 <th>Name</th>
@@ -43,12 +143,12 @@
     </div>
 
     <div class="section">
-        <h2>Recommended Topic (Sentence-BERT)</h2>
+        <h2>Recommended Topic (Sentence-BERT) <span class="badge">SBERT</span></h2>
         <p class="highlight">{{ recommended_topic }}</p>
     </div>
 
     <div class="section">
-        <h2>SciBERT Similarity Recommendation</h2>
+        <h2>SciBERT Similarity Recommendation <span class="badge">SciBERT</span></h2>
         <p class="highlight">{{ scibert_recommendation }}</p>
     </div>
 

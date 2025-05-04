@@ -4,11 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Home | Research Trends Project</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #222;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .button-group a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #0077cc;
+            padding: 0.75rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .button-group a:hover {
+            background-color: #005fa3;
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome to the Research Trends Project!</h1>
     <p>Explore trending topics, papers, and recommendations.</p>
-    <a href="{% url 'register' %}">Register</a> | <a href="{% url 'login' %}">Login</a> | <a href="{% url 'dashboard' %}">Dashboard</a> 
+    <div class="button-group">
+        <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+    </div>
 </body>
 </html>
