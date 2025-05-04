@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ML Topic Modeling Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h2 { color: #333; }
+        ul { margin-bottom: 20px; }
+        .section { margin-bottom: 30px; }
+        .highlight { font-weight: bold; color: #008000; }
+    </style>
+</head>
+<body>
+    <h1>ML Topic Modeling Results for "{{ query }}"</h1>
+
+    <div class="section">
+        <h2>LDA Topics</h2>
+        {% for topic in lda_topics %}
+            <ul>
+                {% for word in topic %}
+                    <li>{{ word }}</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>BERTopic Topics</h2>
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>Topic</th>
+                <th>Name</th>
+                <th>Count</th>
+            </tr>
+            {% for topic in bertopic_topics %}
+                <tr>
+                    <td>{{ topic.Topic }}</td>
+                    <td>{{ topic.Name }}</td>
+                    <td>{{ topic.Count }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Recommended Topic (Sentence-BERT)</h2>
+        <p class="highlight">{{ recommended_topic }}</p>
+    </div>
+
+    <div class="section">
+        <h2>SciBERT Similarity Recommendation</h2>
+        <p class="highlight">{{ scibert_recommendation }}</p>
+    </div>
+
+</body>
+</html>

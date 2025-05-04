@@ -106,3 +106,32 @@ def relevant_papers(user_entry, df, desc_emb, paper_emb, entities, domain=None):
 #     print("Total records:", len(df))
 #     print("Sample data:")
 #     print(df.head())
+
+import requests
+import spacy
+from xml.etree import ElementTree
+
+# Load spaCy model once
+nlp = spacy.load('en_core_web_sm')
+
+def get_arxiv_papers(query='machine learning', max_results=10):
+    base_url = "http://export.arxiv.org/api/query?"
+    search_query = f"search_query=all:{query}&start=0&max_results={max_results}"
+    response = requests.get(base_url + search_query)
+    return response.text if response.status_code == 200 else None
+
+def clean_and_tokenize(text):
+    doc = nlp(text)
+    tokens = [token.text for token in doc if not token.is_stop and not token.is_punct]
+    return ' '.join(tokens)
+
+def parse_arxiv_response(response_text):
+    root = ElementTree.fromstring(response_text)
+    papers = []
+    for entry in root.findall('{http://www.w3.org/2005/Atom}entry'):
+        title = entry.find('{http://www.w3.org/2005/Atom}title').text
+        abstract = entry.find('{http://www.w3.org/2005/Atom}summary').text
+        paper = f"{title}. {abstract}"
+        papers.append(clean_and_tokenize(paper))
+    return papers
+

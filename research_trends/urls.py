@@ -27,5 +27,6 @@ urlpatterns = [
     path('login/', core.views.log_in, name = 'login'),
     path('dashboard/', trending_topics, name='dashboard'),
     path('', home, name='home'),
-    path('recommended', recommender.views.show_recommendations, name = 'suggested')
+    path('recommended', recommender.views.show_recommendations, name = 'suggested'),
+    path('nlp/', include('nlp.urls')),
 ]
