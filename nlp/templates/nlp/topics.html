@@ -111,8 +111,10 @@
 </head>
 <body>
 
-    <h1>📊 ML Topic Modeling Results for <span class="query-text">"{{ query }}"</span></h1>
-
+    <h1>Topic Modeling Results for <span class="query-text">"{{ query }}"</span></h1>
+    <div class = "make_selection">
+        
+    </div>
     <div class="section">
         <h2>LDA Topics <span class="badge">LDA</span></h2>
         {% for topic in lda_topics %}

@@ -88,6 +88,29 @@
             transform: translateY(0);
         }
 
+        .submit-btn_for_paper {
+            background-color: #4b7bec;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 250px;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn_for_paper:hover {
+            background-color: #2d6ad6;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn_for_paper:active {
+            background-color: #1a4f99;
+            transform: translateY(0);
+        }
+
         .radio-group label:hover {
             color: #3498db;
         }
@@ -123,7 +146,7 @@
     <img class="wordcloud" src="data:image/png;base64,{{ wordcloud }}" alt="Trending Word Cloud">
     
     <h2 class="sub-heading">Choose among the following topics:</h2>
-    <form action="/recommended" method="POST" class="topics-form">
+    <form action="/nlp/fetch_topics/" method="POST" class="topics-form">
         {% csrf_token %}
         <div class="radio-group">
             <label>
@@ -145,7 +168,8 @@
                 <input type="radio" name="ch" value="NLP" required> NLP
             </label>
         </div>
-        <button type="submit" class="submit-btn">Suggest Papers</button>
+        <button type="submit" value = "topics"class="submit-btn">Suggest Topics</button>
+        <button type="submit" value = "papers" class="submit-btn_for_paper">Suggest Papers</button>
     </form>
 </div>
 {% endblock %}

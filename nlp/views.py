@@ -10,7 +10,7 @@ import numpy as np
 import torch
 
 # Import preprocessing functions
-from .preprocessing import get_arxiv_papers, parse_arxiv_response
+from .preprocessing import get_arxiv_papers, parse_arxiv_response, load_papers_from_db, relevant_papers
 
 # Load models once globally
 sentence_model = SentenceTransformer('allenai/scibert_scivocab_uncased')
@@ -98,4 +98,31 @@ def fetch_topics(request):
         'scibert_recommendation': scibert_recommendation
     }
     
-    return render(request, 'papers/topics.html', context)
+    return render(request, 'nlp/topics.html', context)
+
+from django.shortcuts import render
+from nlp.preprocessing import load_papers_from_db, preprocess_dataframe, relevant_papers
+
+df = load_papers_from_db()
+processed = preprocess_dataframe(df)
+
+def get_recommendations(request):
+    user_query = request.GET.get('query', '')
+    domain = request.GET.get('domain', None)
+
+    suggested_topics = []
+    if user_query:
+        results = relevant_papers(
+            user_query,
+            processed['df'].copy(),
+            processed['desc_emb'],
+            processed['paper_emb'],
+            processed['entities'],
+            domain=domain
+        )
+        suggested_topics = results['title'].tolist()
+
+    return render(request, 'recommender/recommend.html', {
+        'suggested_topics': suggested_topics,
+        'user_query': user_query
+    })
