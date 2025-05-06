@@ -88,7 +88,7 @@
             transform: translateY(0);
         }
 
-        .submit-topic {
+        .submit-btn_for_paper {
             background-color: #4b7bec;
             color: white;
             padding: 12px 24px;
@@ -101,12 +101,12 @@
             margin-top: 20px;
         }
 
-        .submit-topic:hover {
+        .submit-btn_for_paper:hover {
             background-color: #2d6ad6;
             transform: translateY(-2px);
         }
 
-        .submit-topic:active {
+        .submit-btn_for_paper:active {
             background-color: #1a4f99;
             transform: translateY(0);
         }
@@ -168,8 +168,8 @@
                 <input type="radio" name="ch" value="NLP" required> NLP
             </label>
         </div>
-        <button type="submit" class="submit-btn">Suggest Papers</button>
-        <button type="submit" class="submit-topic">Suggest Topics</button>
+        <button type="submit" value = "topics"class="submit-btn">Suggest Topics</button>
+        <button type="submit" value = "papers" class="submit-btn_for_paper">Suggest Papers</button>
     </form>
 </div>
 {% endblock %}
