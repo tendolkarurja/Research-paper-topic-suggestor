@@ -187,11 +187,41 @@
         <h2>Recommended Topic (Sentence-BERT) <span class="badge">SBERT</span></h2>
         <p class="highlight">{{ recommended_topic }}</p>
     </div>
-
+    
     <div class="section">
-        <h2>SciBERT Similarity Recommendation <span class="badge">SciBERT</span></h2>
-        <p class="highlight">{{ scibert_recommendation }}</p>
+        <h2>SciBERT Similarity Recommendations <span class="badge">SciBERT</span></h2>
+        {% for rec in scibert_recommendation %}
+            <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; background-color: #f9f9f9;">
+                {{ rec }}
+            </div>
+        {% endfor %}
     </div>
+    
+    {% if summary %}
+    <div class="section">
+        <h2>Summary of Top Papers <span class="badge">BART</span></h2>
+        <blockquote style="background-color: #eef6fb; border-left: 5px solid var(--primary-color); padding: 15px; font-style: italic;">
+            {{ summary }}
+        </blockquote>
+    </div>
+    {% endif %}
+    
+    {% if bertopic_representatives %}
+    <div class="section">
+        <h2>Representative Documents for BERTopic Topics</h2>
+        {% for topic_id, docs in bertopic_representatives.items %}
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: var(--primary-color);">Topic {{ topic_id }}</h3>
+                <ul style="list-style-type: disc; padding-left: 20px;">
+                    {% for doc in docs %}
+                        <li style="margin-bottom: 10px;">{{ doc }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
 
 </body>
 </html>

@@ -4,51 +4,52 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
-from transformers import BertTokenizer, BertModel
+from transformers import BertTokenizer, BertModel, pipeline
 from bertopic import BERTopic
 import numpy as np
 import torch
 
 # Import preprocessing functions
-from .preprocessing import get_arxiv_papers, parse_arxiv_response, load_papers_from_db, relevant_papers
+from .preprocessing import get_arxiv_papers, parse_arxiv_response
 
-# Load models once globally
+# Load models globally
 sentence_model = SentenceTransformer('allenai/scibert_scivocab_uncased')
 bert_tokenizer = BertTokenizer.from_pretrained('allenai/scibert_scivocab_uncased')
 bert_model = BertModel.from_pretrained('allenai/scibert_scivocab_uncased')
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")  # Optional summarizer
+
+# ========== Topic Modeling Functions ==========
 
 def lda_topic_modeling(papers, num_topics=3, num_terms=5):
     vectorizer = TfidfVectorizer(stop_words='english')
     X = vectorizer.fit_transform(papers)
-    lda = LatentDirichletAllocation(n_components=num_topics, random_state=42)
+    lda = LatentDirichletAllocation(n_components=num_topics, random_state=40)
     lda.fit(X)
     topics = []
     for topic in lda.components_:
         topics.append([vectorizer.get_feature_names_out()[i] for i in topic.argsort()[-num_terms:]])
     return topics
 
-def bertopic_modeling(papers, num_topics=3):
-    topic_model = BERTopic(top_n_words=num_topics)
+def bertopic_modeling(papers, num_words_per_topic=5):
+    topic_model = BERTopic(top_n_words=num_words_per_topic)
     topics, _ = topic_model.fit_transform(papers)
     topic_info = topic_model.get_topic_info()
-    return topic_info.to_dict(orient='records')
+    representative_docs = {
+        topic: topic_model.get_representative_docs(topic)
+        for topic in set(topics)
+    }
+    return topic_info.to_dict(orient='records'), representative_docs
 
+# ========== Recommendation Functions ==========
 
 def recommend_topics(query, papers):
-    """
-    Recommend the most similar paper to the query using cosine similarity.
-    """
     query_embedding = sentence_model.encode([query])
     paper_embeddings = sentence_model.encode(papers)
     similarities = cosine_similarity(query_embedding, paper_embeddings)
     most_similar_index = similarities.argmax()
     return papers[most_similar_index]
 
-def scibert_similarity_search(texts, query, num_topics=3):
-    """
-    Use SciBERT model to find the top N most similar papers to the query based on cosine similarity.
-    Returns a list of recommended texts.
-    """
+def scibert_similarity_search(texts, query, num_results=3):
     inputs = bert_tokenizer(texts, return_tensors="pt", padding=True, truncation=True)
     query_input = bert_tokenizer(query, return_tensors="pt")
     with torch.no_grad():
@@ -56,22 +57,17 @@ def scibert_similarity_search(texts, query, num_topics=3):
         query_output = bert_model(**query_input).last_hidden_state.mean(dim=1)
     
     similarity = cosine_similarity(query_output.numpy(), text_outputs.numpy())[0]
-    
-    # Get indices of top N similar texts
-    top_indices = similarity.argsort()[-num_topics:][::-1]
-
-    # Return those top N texts as a list
+    top_indices = similarity.argsort()[-num_results:][::-1]
     recommended_texts = [texts[i] for i in top_indices]
-
     return recommended_texts
 
+# ========== View Function ==========
 
 def fetch_topics(request):
     query = request.GET.get('query', 'Machine Learning')
     num_topics = int(request.GET.get('num_topics', 3))
     num_terms = int(request.GET.get('num_terms', 5))
     model_choice = request.GET.get('model_choice', 'both')
-    
 
     response_text = get_arxiv_papers(query)
     if not response_text:
@@ -91,42 +87,54 @@ def fetch_topics(request):
         context['lda_topics'] = lda_topics
 
     if model_choice in ['bertopic', 'both']:
-        bertopic_info = bertopic_modeling(papers, num_topics)
+        bertopic_info, representative_docs = bertopic_modeling(papers, num_terms)
         context['bertopic_topics'] = bertopic_info
+        context['bertopic_representatives'] = representative_docs
 
-    # Recommendation and similarity search
+    # Paper recommendation
     recommended_topic = recommend_topics(query, papers)
+    context['recommended_topic'] = recommended_topic
+
+    # SciBERT similarity-based recommendations
     scibert_recommendation = scibert_similarity_search(papers, query, num_topics)
-    context.update({
-        'recommended_topic': recommended_topic,
-        'scibert_recommendation': scibert_recommendation
-    }
-    
+    context['scibert_recommendation'] = scibert_recommendation
+
+    # Optional: Abstractive summarization of top relevant results
+    combined_text = " ".join(scibert_recommendation)
+    if len(combined_text.split()) > 50:
+        try:
+            summary = summarizer(combined_text, max_length=100, min_length=30, do_sample=False)[0]['summary_text']
+            context['summary'] = summary
+        except Exception as e:
+            context['summary'] = "Summarization failed: " + str(e)
+    else:
+        context['summary'] = "Summary not generated due to insufficient content."
+
     return render(request, 'nlp/topics.html', context)
 
 from django.shortcuts import render
 from nlp.preprocessing import load_papers_from_db, preprocess_dataframe, relevant_papers
 
-df = load_papers_from_db()
-processed = preprocess_dataframe(df)
+# df = load_papers_from_db()
+# processed = preprocess_dataframe(df)
 
-def get_recommendations(request):
-    user_query = request.GET.get('query', '')
-    domain = request.GET.get('domain', None)
+# def get_recommendations(request):
+#     user_query = request.GET.get('query', '')
+#     domain = request.GET.get('domain', None)
 
-    suggested_topics = []
-    if user_query:
-        results = relevant_papers(
-            user_query,
-            processed['df'].copy(),
-            processed['desc_emb'],
-            processed['paper_emb'],
-            processed['entities'],
-            domain=domain
-        )
-        suggested_topics = results['title'].tolist()
+#     suggested_topics = []
+#     if user_query:
+#         results = relevant_papers(
+#             user_query,
+#             processed['df'].copy(),
+#             processed['desc_emb'],
+#             processed['paper_emb'],
+#             processed['entities'],
+#             domain=domain
+#         )
+#         suggested_topics = results['title'].tolist()
 
-    return render(request, 'recommender/recommend.html', {
-        'suggested_topics': suggested_topics,
-        'user_query': user_query
-    })
+#     return render(request, 'recommender/recommend.html', {
+#         'suggested_topics': suggested_topics,
+#         'user_query': user_query
+#     })
