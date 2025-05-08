@@ -44,7 +44,7 @@
         }
 
         /* Form Styling */
-        .topics-form {
+        {% comment %} .topics-form {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -63,8 +63,14 @@
 
         .radio-group input[type="radio"] {
             margin-right: 10px;
-        }
+        } {% endcomment %}
 
+        .ch{
+            border-radius: 5 px;
+            border: solid rgb(0,0,0);
+            padding: 12px 24px;
+        }
+        
         .submit-btn {
             background-color: #4b7bec;
             color: white;
@@ -148,7 +154,17 @@
     <h2 class="sub-heading">Choose among the following topics:</h2>
     <form action="/nlp/fetch_topics/" method="POST" class="topics-form">
         {% csrf_token %}
-        <div class="radio-group">
+        <div class = "choice">
+            <label> Enter your domain of choice: </label>
+            <input class = "ch" type = "text" name = "query" required >
+            <br>
+            <label> Choose model you want to use: LDA or BERT </label>
+            <input class = "op" type = "radio" name = "model_choice" value = "lda" required> LDA
+            <input class = "op" type = "radio" name = "model_choice" value = "bertopic" required> BERT
+            <input class = "op" type = "radio" name = "model_choice" value = "both" required> Both
+
+            
+        {% comment %} <div class="radio-group">
             <label>
                 <input type="radio" name="ch" value="AI" required> AI
             </label>
@@ -167,7 +183,7 @@
             <label>
                 <input type="radio" name="ch" value="NLP" required> NLP
             </label>
-        </div>
+        </div> {% endcomment %}
         <button type="submit" value = "topics"class="submit-btn">Suggest Topics</button>
         <button type="submit" value = "papers" class="submit-btn_for_paper">Suggest Papers</button>
     </form>
