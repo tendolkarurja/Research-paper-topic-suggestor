@@ -1,58 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2> Here are a few research papers to help you: </h2>
-    {% if selected_choice == "AI" %}
-        <a href = "https://arxiv.org/abs/2401.04088"><h3> Mixtral of Experts </h3>
-        <br> <p>Introduces Mixtral 8x7B, a Sparse Mixture of Experts (SMoE) language model combining efficiency with powerful performance.</p>
-        <br>
-        <a href = "https://arxiv.org/abs/2402.15391"><h3>Generative Interactive Environments</h3><br>
-        <p>Presents a novel generative model capable of creating interactive virtual environments based on text or image prompts.</p>
-        <br> 
-        <a href = "https://arxiv.org/abs/2504.01911"><h3>Advancing AI-Scientist Understanding: Making LLM Think Like a Physicist with Interpretable Reasoning</h3><br>
-        <p>Explores methods to enhance large language models with interpretable reasoning akin to physicists' thought processes.</p>
-        <br>
-    {% elif selected_choice == "ML" %}
-        <a href = "https://arxiv.org/abs/2503.07220#:~:text=Estimation%20of%20Local%20Geometric%20Structure%20on%20Manifolds%20from%20Noisy%20Data,-Yariv%20Aizenbud%2C%20Barak&text=A%20common%20observation%20in%20data,estimation%20for%20manifold%2Dvalued%20data."><h3> Estimation of Local Geometric Structure on Manifolds from Noisy Data  </h3> </a>
-        <br> <p>Focuses on estimating local geometric structures on manifolds using noisy data.</p>
-        <br>
-        <a href = "https://www.jmlr.org/papers/volume26/24-1113/24-1113.pdf"><h3>Ontolearn: A Framework for Large-scale OWL Class Expression Learning in Python </h3> </a> <br>
-        <p>Introduces a framework for large-scale OWL class expression learning.</p>
-        <br> 
-        <a href = "https://www.researchgate.net/publication/375749045_Using_machine_learning_for_detecting_liquidity_risk_in_banks"><h3>Using machine learning for detecting liquidity risk in banks</h3> </a> <br>
-        <p>Utilizes machine learning methods to detect liquidity risks in banking institutions.</p>
-        <br>
-    {% elif selected_choice == "Quantum Computing" %}
-        <a href = "https://arxiv.org/abs/2403.02240"><h3> Quantum Computing: Vision and Challenges </h3> </a>
-        <br> <p>This paper provides a comprehensive overview of the current state of quantum computing, discussing advancements in hardware, quantum cryptography, software, and scalability. </p>
-        <br>
-        <a href = "https://arxiv.org/abs/2411.09131"><h3>AI for Quantum Computing</h3></a><br>
-        <p>Exploring the intersection of AI and quantum computing, this paper delves into how AI techniques can enhance quantum computing applications and vice versa.</p>
-        <br> 
-        <a href = "https://arxiv.org/abs/2405.08810"><h3>Quantum Computing with Qiskit</h3><br>
-        <p>An in-depth look at Qiskit, an open-source SDK for working with quantum computers. </p>
-        <br>
-    {% elif selected_choice == "NLP" %}
-        <a href="https://arxiv.org/abs/2404.04525">
-            <h3>Scaling Laws for Large Language Models: Revisiting and Revising</h3>
-        </a>
-        <br>
-        <p>This paper revisits scaling laws in NLP, offering new insights into how dataset size, compute, and model size influence large language model performance.</p>
-        <br>
-        
-        <a href="https://arxiv.org/abs/2403.13348">
-            <h3>Self-Discover: Language Agents Learn to Discover Novel Knowledge</h3>
-        </a>
-        <br>
-        <p>This work presents methods where language agents autonomously discover new knowledge through interactions, enhancing their generalization abilities without explicit supervision.</p>
-        <br>
-        
-        <a href="https://arxiv.org/abs/2402.11382">
-            <h3>Chain of Thought Prompting Elicits Reasoning in Large Language Models</h3>
-        </a>
-        <br>
-        <p>This highly influential paper demonstrates how "chain of thought" prompting can significantly improve reasoning capabilities in large NLP models.</p>
-        <br>
+    
     {% endif %}
 
 {% endblock %}
